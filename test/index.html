@@ -11,5 +11,64 @@
 
 <script type="text/javascript" src="//cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="../js/mlist.js"></script>
+<script type="text/javascript">
+    var mlist = $("#list").MList({
+        query: "data.json",
+        // imgSrc: "imgSrc",
+        itemId: "id",
+        items: [{
+            index: "name"
+        }, {
+            index: "sex",
+            formatter: function(value, row) {
+                return value === 0 ? "male" : "female";
+            }
+        }],
+        details: [{
+            index: "name",
+            name: "Name"
+        }, {
+            index: "sex",
+            name: "Sex",
+            formatter: function(value, row) {
+                return value === 1 ? "male" : "female";
+            }
+        }, {
+            index: "intro",
+            name: "Introduce"
+        }, {
+            index: "test",
+            name: "测试"
+        }],
+        icon: "glyphicon glyphicon-user",
+        className: "list-group-item-info",
+        showNumber: true,
+        showArrow: true,
+        action: function(id, row, element) {
+            console.info("You click the button whose id is " + id);
+            element.hasClass("active") ? element.removeClass("active") : element.addClass("active");
+        },
+        buttons: [{
+            name: "test1",
+            action: function(id, row, element) {
+                alert("You click the button whose id is " + id);
+            }
+        }, {
+            name: "test2",
+            action: function(id, row, element) {
+                alert("You click the button whose data is " + JSON.stringify(row));
+            },
+            className: "btn-danger"
+        }],
+        dataAdapter: function(datas) {
+            console.info(datas);
+            return datas;
+        },
+        complete: function(data, element) {
+            console.info(element);
+        }
+    });
+    mlist.query();
+</script>
 </body>
 </html>

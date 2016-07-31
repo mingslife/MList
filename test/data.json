@@ -3,12 +3,14 @@
         "id": 1,
         "name": "Ming",
         "sex": 0,
-        "intro": "Hello world!"
+        "intro": "Hello world!",
+        "test": "123"
     },
     {
         "id": 2,
         "name": "test",
         "sex": 1,
-        "intro": "Goodbye world!"
+        "intro": "Goodbye world!",
+        "test": "123"
     }
 ]

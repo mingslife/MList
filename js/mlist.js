@@ -1,3 +1,9 @@
+/**
+ * MList
+ * Ming
+ * https://github.com/mingslife/MList
+ * 2016
+ */
 (function() {
     "use strict";
 
@@ -21,12 +27,14 @@
             action: params.action || null, // 点击列表项调用的函数名
             showNumber: params.showNumber || false, // 是否展示序号
             showArrow: params.showArrow || false, // 是否展示箭头
-            longClick: params.longClick || false, // 是否响应长按事件
-            longClickMenu: params.longClickMenu || null, // 长按事件菜单
+            // longClick: params.longClick || false, // 是否响应长按事件
+            // longClickMenu: params.longClickMenu || null, // 长按事件菜单
             buttons: params.buttons || null, // 详情中附加的操作按钮
             imgSrc: params.imgSrc || null, // 列表图片
             icon: params.icon || null, // 列表图标
-            className: params.className || null // 列表class
+            className: params.className || null, // 列表class
+            dataAdapter: params.dataAdapter || null, // 数据适配器
+            complete: params.complete || null
         };
         this.element = $("#" + this.params.elementId);
         this.element.addClass("list-group mlist-list");
@@ -41,8 +49,8 @@
             data: params.condition,
             dataType: "json",
             success: function(datas) {
+                if (params["dataAdapter"] && typeof params["dataAdapter"] === "function") datas = params.dataAdapter(datas);
                 mlistsDatas[elementId] = datas;
-                console.info(datas);
                 var datasHtml = '';
                 for (var indexOfDatas = 0, lengthOfDatas = datas.length; indexOfDatas < lengthOfDatas; indexOfDatas++) {
                     var data = datas[indexOfDatas];
@@ -70,9 +78,10 @@
 
                     datasHtml += dataHtml;
                 }
-                console.info(datasHtml);
 
                 element.html(datasHtml);
+                
+                if (params["complete"]) params.complete(datas, element);
             }
         });
         console.info(this.params.query);
@@ -102,6 +111,16 @@
         var data = datas[index];
         var itemId = params["itemId"] ? data[params.itemId] : null;
         params.buttons[indexOfButtons].action(itemId, data, item);
+    };
+    MListObject.prototype.getDatas = function() {
+        var params = this.params;
+        var elementId = params.elementId;
+        return mlistsDatas[elementId];
+    };
+    MListObject.prototype.getRow = function(index) {
+        var params = this.params;
+        var elementId = params.elementId;
+        return mlistsDatas[elementId][index];
     };
     function getItemHtml(items, data) {
         var html = '<span>';
@@ -165,8 +184,8 @@
                 return mlist;
             } else if (typeOfParams === "string") {
                 var mlist = mlists[id];
-                mlist[params](extra);
-                return mlist;
+                return mlist[params](extra);
+                // return mlist;
             } else {
                 return mlists[id];
             }
@@ -175,49 +194,3 @@
         }
     };
 })(window.jQuery);
-
-var mlist = $("#list").MList({
-    query: "data.json",
-    // imgSrc: "imgSrc",
-    itemId: "id",
-    items: [{
-        index: "name"
-    }, {
-        index: "sex",
-        formatter: function(value, row) {
-            return value === 0 ? "male" : "female";
-        }
-    }],
-    details: [{
-        index: "name",
-        name: "Name"
-    }, {
-        index: "sex",
-        name: "Sex",
-        formatter: function(value, row) {
-            return value === 1 ? "male" : "female";
-        }
-    }, {
-        index: "intro",
-        name: "Introduce"
-    }],
-    icon: "glyphicon glyphicon-user",
-    className: "list-group-item-info",
-    showNumber: true,
-    showArrow: true,
-    action: function(id, row, element) {
-        console.info("You click the button whose id is " + id);
-        element.hasClass("active") ? element.removeClass("active") : element.addClass("active");
-    },
-    buttons: [{
-        name: "test1",
-        action: function(id, row, element) {
-            alert("You click the button whose id is " + id);
-        }
-    }, {
-        name: "test2",
-        action: function(id, row, element) {},
-        className: "btn-danger"
-    }]
-});
-mlist.query();
