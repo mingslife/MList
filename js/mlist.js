@@ -4,8 +4,10 @@
  * https://github.com/mingslife/MList
  * 2016
  */
-(function() {
+;(function(window, undefined) {
     "use strict";
+
+    var $ = window.$;
 
     function MList(params) {
         return new MListObject(params);
@@ -193,4 +195,4 @@
             return mlists[id];
         }
     };
-})(window.jQuery);
+})(window);
