@@ -7,4 +7,5 @@ Web移动端列表插件
 ## 示例
 <https://mingslife.github.io/mlist.html>
 
-文档将会持续更新，谢谢大家！
+## 开源许可
+MIT
